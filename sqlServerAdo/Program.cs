@@ -15,18 +15,19 @@ namespace sqlServerAdo
             string constr = "Server=(localdb)\\mssqllocaldb; Database = Northwind; Trusted_Connection = True; TrustServerCertificate=true";
             SqlConnection con = new SqlConnection(constr);
 
-            //SqlCommand:  SqlConnection nesnesine ihtiyaç duyar.
+            //SqlCommand: SqlConnection nesnesine ihtiyaç duyar.
             //Çalıştığı zaman gerekli sql scriptler yazılarak sonuç beklenir.
 
-            try
-            {
-                con.Open();
-                // SQl'den veri Okuma
+           
+           try
+           {
+                 con.Open();
+                //Reading data from SQl
                 //SqlCommand cmd2 = con.CreateCommand();
                 SqlCommand cmd = new SqlCommand();
                 cmd.Connection = con;
-                cmd.CommandText = "Select * from Shippers";
-                SqlDataReader rdr = cmd.ExecuteReader();
+                //cmd.CommandText = "Select * from Shippers";
+                //SqlDataReader rdr = cmd.ExecuteReader();
 
                 //while (rdr.Read())
                 //{
@@ -41,21 +42,51 @@ namespace sqlServerAdo
 
                 //Console.WriteLine("Durum:" + con.State);
 
-               // DataSet,DataTable , SqlDataAdaptor Kullanimi
+                //----CRUD operations
+                //create => ınsert
+                string insertsql = "insert into shippers (companyname,phone) values('yurtici kargo','444 6677')";
+                string updatesql = "update shippers set phone='444 99 88' where companyname='yurtici kargo'";
+                string deletesql = "delete shippers where companyname='speedy express' ";
+                cmd.commandtext = deletesql;
+                int res = cmd.ExecuteNonQuery();
+
+                if (sonuc > 0)
+                {
+                    console.writeline("Transaction successful");
+                }
+                else
+                {
+
+                    console.writeline("Transaction failed");
+                }
+
+                //DataSet, DataTable, SqlDataAdaptor usage
                 cmd.CommandText = "Select * from Shippers";
                 SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                 adapter.InsertCommand.CommandText = "Insert into ....";
-                DataSet ds = new DataSet(); // Database'e karsilik Gelen nesnedir.
-                DataTable table = new DataTable(); // Database de tablo'ya karsilik gelen nesne
+                DataSet ds = new DataSet(); // Database'e karşılık gelen nesne.
+                DataTable table = new DataTable(); // Database de tabloya karşılık gelen nesne.
 
+                adapter.Fill(ds);
+                adapter.Fill(table);
+                foreach (DataRow item in ds.Tables[0].Rows)
+                {
+                    Console.WriteLine(item["ShipperId"] + " " + item["CompanyName"]);
+                }
+                adapter.Fill(table);
+                Console.WriteLine(" Table ");
+                foreach (DataRow item in table.Rows)
+                {
+                    Console.WriteLine(item["ShipperId"] + " " + item["CompanyName"]);
+                }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Hata:" + ex.Message);
+                Console.WriteLine("Error:" + ex.Message);
             }
             finally
             {
-                if (con.State == System.Data.ConnectionState.Open);
+                if (con.State == System.Data.ConnectionState.Open) ;
                 con.Close();
             }
         }
