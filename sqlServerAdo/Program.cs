@@ -7,6 +7,8 @@ namespace sqlServerAdo
 {
     class Program
     {
+        private static object console;
+
         static void Main(string[] args)
         {
             List<Shipper> shippers = new List<Shipper>();
@@ -22,41 +24,41 @@ namespace sqlServerAdo
            try
            {
                  con.Open();
-                //----Reading data from SQl
-                //SqlCommand cmd2 = con.CreateCommand();
                 SqlCommand cmd = new SqlCommand();
                 cmd.Connection = con;
-                cmd.commandtext = "select * from shippers";
-                sqldatareader rdr = cmd.executereader();
+                #region Reading data from SQl
+                // cmd.CommandText = "Select * from Shippers";
+                SqlDataReader rdr = cmd.ExecuteReader();
 
-                while (rdr.read())
+                while (rdr.Read())
                 {
-                    shipper shipper = new shipper();
-                    shipper.shipperıd = int.parse(rdr[0].tostring());
-                    shipper.companyname = rdr[1].tostring();
-                    shipper.phone = rdr[2].tostring();
-                    shippers.add(shipper);
+                    Shipper shipper = new Shipper();
+                    shipper.ShipperId = int.Parse(rdr[0].ToString());
+                    shipper.CompanyName = rdr[1].ToString();
+                    shipper.Phone = rdr[2].ToString();
+                    shippers.Add(shipper);
                 }
+                shippers.ForEach(shipper => Console.WriteLine(shipper.ShipperId + " " + shipper.CompanyName + " " + shipper.Phone));
+               //Console.WriteLine("Durum:" + con.State);
 
-                shippers.foreach (shipper => console.writeline(shipper.shipperıd + " " + shipper.companyname + " " + shipper.phone)) ;
+                #endregion       
 
-                console.writeline("durum:" + con.state);
-
-                //----CRUD operations
+                #region CRUD operations
                 //create => ınsert
                 string insertsql = "insert into shippers (companyname,phone) values('yurtici kargo','444 6677')";
                 string updatesql = "update shippers set phone='444 99 88' where companyname='yurtici kargo'";
                 string deletesql = "delete shippers where companyname='speedy express' ";
-                cmd.commandtext = deletesql;
+                cmd.CommandText = deletesql;
                 int res = cmd.ExecuteNonQuery();
 
-                if (sonuc > 0)
-                    console.writeline("Transaction successful");
+                if (res > 0)
+                    Console.WriteLine("Transaction successful");
                 
                 else
-                    console.writeline("Transaction failed");
+                    Console.WriteLine("Transaction failed");
+                #endregion
 
-                //----DataSet, DataTable, SqlDataAdaptor usage
+                #region DataSet, DataTable, SqlDataAdaptor usage
                 cmd.CommandText = "Select * from Shippers";
                 SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                 adapter.InsertCommand.CommandText = "Insert into ....";
@@ -75,6 +77,7 @@ namespace sqlServerAdo
                 {
                     Console.WriteLine(item["ShipperId"] + " " + item["CompanyName"]);
                 }
+                #endregion
             }
             catch (Exception ex)
             {
