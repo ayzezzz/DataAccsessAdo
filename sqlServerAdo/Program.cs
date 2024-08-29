@@ -22,25 +22,25 @@ namespace sqlServerAdo
            try
            {
                  con.Open();
-                //Reading data from SQl
+                //----Reading data from SQl
                 //SqlCommand cmd2 = con.CreateCommand();
                 SqlCommand cmd = new SqlCommand();
                 cmd.Connection = con;
-                //cmd.CommandText = "Select * from Shippers";
-                //SqlDataReader rdr = cmd.ExecuteReader();
+                cmd.commandtext = "select * from shippers";
+                sqldatareader rdr = cmd.executereader();
 
-                //while (rdr.Read())
-                //{
-                //    Shipper shipper = new Shipper();
-                //    shipper.ShipperId = int.Parse(rdr[0].ToString());
-                //    shipper.CompanyName = rdr[1].ToString();
-                //    shipper.Phone = rdr[2].ToString();
-                //    shippers.Add(shipper);
-                //}
+                while (rdr.read())
+                {
+                    shipper shipper = new shipper();
+                    shipper.shipperıd = int.parse(rdr[0].tostring());
+                    shipper.companyname = rdr[1].tostring();
+                    shipper.phone = rdr[2].tostring();
+                    shippers.add(shipper);
+                }
 
-                //shippers.ForEach(shipper => Console.WriteLine(shipper.ShipperId + " " + shipper.CompanyName + " " + shipper.Phone));
+                shippers.foreach (shipper => console.writeline(shipper.shipperıd + " " + shipper.companyname + " " + shipper.phone)) ;
 
-                //Console.WriteLine("Durum:" + con.State);
+                console.writeline("durum:" + con.state);
 
                 //----CRUD operations
                 //create => ınsert
@@ -51,16 +51,12 @@ namespace sqlServerAdo
                 int res = cmd.ExecuteNonQuery();
 
                 if (sonuc > 0)
-                {
                     console.writeline("Transaction successful");
-                }
+                
                 else
-                {
-
                     console.writeline("Transaction failed");
-                }
 
-                //DataSet, DataTable, SqlDataAdaptor usage
+                //----DataSet, DataTable, SqlDataAdaptor usage
                 cmd.CommandText = "Select * from Shippers";
                 SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                 adapter.InsertCommand.CommandText = "Insert into ....";
@@ -86,8 +82,8 @@ namespace sqlServerAdo
             }
             finally
             {
-                if (con.State == System.Data.ConnectionState.Open) ;
-                con.Close();
+                if (con.State == System.Data.ConnectionState.Open);
+                    con.Close();
             }
         }
     }
